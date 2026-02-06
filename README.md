@@ -2,7 +2,7 @@
 
 A production-ready web service that tracks GitHub profile/repository views and generates highly customizable badges (SVG/PNG) embeddable in GitHub READMEs and external websites.
 
-![Profile Views](https://your-domain.com/badge?username=your-username&style=rounded&icon=eye&bg=007acc)
+![Profile Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=rounded&icon=eye&bg=007acc)
 
 ## Features
 

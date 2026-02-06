@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { getCounters, getDailyViews, getViewLogs } from '../db/mongodb.js';
-import { redis, incrementViewCount, getViewCount, setViewCount, checkCooldown } from './redis.js';
+import { redis, incrementViewCount, getViewCount, setViewCount, checkCooldown, hasViewCount } from './redis.js';
 
 // Known bot user agents to filter
 const BOT_PATTERNS = [
@@ -101,8 +101,8 @@ export async function trackView(options = {}) {
     };
   }
   
-  // Increment view count
-  const newCount = await incrementViewCount(counterKey);
+  // Increment view count (pass MongoDB value to initialize Redis if needed)
+  const newCount = await incrementViewCount(counterKey, counter.total_views);
   
   // Update MongoDB in background (for persistence)
   try {

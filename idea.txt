@@ -56,3 +56,9 @@ git push -u origin main
 git remote add origin https://github.com/bibekchandsah/page-visit.git
 git branch -M main
 git push -u origin main
+
+
+
+
+![Profile Views](https://page-visit-counter.onrender.com/badge?username=bebedudu&repo=bibekchandsah)
+

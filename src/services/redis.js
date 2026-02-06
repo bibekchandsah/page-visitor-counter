@@ -86,13 +86,23 @@ try {
 export { redis, useMemoryStore };
 
 // Helper functions for view counting
-export async function incrementViewCount(key) {
-  return await redis.incr(`views:${key}`);
+export async function incrementViewCount(key, initialValue = 0) {
+  const fullKey = `views:${key}`;
+  // Check if key exists, if not initialize with initialValue
+  const exists = await redis.exists(fullKey);
+  if (!exists && initialValue > 0) {
+    await redis.set(fullKey, String(initialValue));
+  }
+  return await redis.incr(fullKey);
 }
 
 export async function getViewCount(key) {
   const count = await redis.get(`views:${key}`);
   return parseInt(count || '0', 10);
+}
+
+export async function hasViewCount(key) {
+  return await redis.exists(`views:${key}`) > 0;
 }
 
 export async function setViewCount(key, count) {
