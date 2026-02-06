@@ -1,0 +1,58 @@
+user can initialize with specific page view
+let time set by the user and by default use 5 min
+let user choose text to display on badge
+let user choose color scheme
+let user choose icon style (outline, filled, etc)
+let user choose to display total views or unique views
+let user customize the style
+
+
+
+
+<!-- Basic -->
+![Views](http://localhost:3000/badge?username=octocat)
+
+<!-- Styled -->
+![Views](http://localhost:3000/badge?username=octocat&style=rounded&icon=github&bg=007acc)
+![Views](http://localhost:3000/badge?username=octocat&style=rounded&icon=github&bg=007acc&count=1234)
+
+<!-- Gradient -->
+![Views](http://localhost:3000/badge?username=octocat&style=glass&bg=0f2027,203a43,2c5364)
+
+![Profile Views](http://your-server.com/badge?username=bibeksha)
+
+
+POST /api/set-count
+Authorization: Bearer <token>
+Content-Type: application/json
+{
+  "username": "your-username",
+  "repo": null,
+  "count": 12345
+}
+
+
+How to Get MongoDB Atlas Free
+Go to mongodb.com/atlas
+Create free account
+Create cluster → Choose M0 Sandbox (FREE)
+Choose region closest to you
+Create database user (username/password)
+Get connection string:
+mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/pageviews
+
+
+
+
+echo "# page-visit" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/bibekchandsah/page-visit.git
+git push -u origin main
+
+
+git remote add origin https://github.com/bibekchandsah/page-visit.git
+git branch -M main
+git push -u origin main

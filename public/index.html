@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Views Counter - GitHub Profile & Repository View Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --text-primary: #f0f6fc;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --green: #3fb950;
+      --border: #30363d;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    /* Navigation */
+    nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 0;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+    
+    /* Badge Preview */
+    .badge-preview {
+      margin: 40px 0;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .badge-preview img {
+      height: 28px;
+    }
+    
+    /* Features */
+    .features {
+      padding: 80px 0;
+      background: var(--bg-secondary);
+    }
+    
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 60px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    
+    .feature-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .feature-card p {
+      color: var(--text-secondary);
+    }
+    
+    .icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent), var(--green));
+      border-radius: 8px;
+    }
+    
+    /* Quick Start */
+    .quickstart {
+      padding: 80px 0;
+    }
+    
+    .quickstart h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 60px;
+    }
+    
+    .code-block {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+    
+    .code-block code {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      color: var(--text-primary);
+    }
+    
+    .copy-btn {
+      float: right;
+      padding: 6px 12px;
+      font-size: 0.875rem;
+    }
+    
+    /* Generator */
+    .generator {
+      padding: 80px 0;
+      background: var(--bg-secondary);
+    }
+    
+    .generator h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 60px;
+    }
+    
+    .generator-form {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-group label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .preview-box {
+      margin-top: 32px;
+      padding: 24px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .output-box {
+      margin-top: 24px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: 6px;
+      font-family: monospace;
+      word-break: break-all;
+      text-align: left;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">📊 PageViews</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#generator">Generator</a>
+        <a href="/dashboard">Dashboard</a>
+      </div>
+    </div>
+  </nav>
+  
+  <section class="hero">
+    <div class="container">
+      <h1>Track Your GitHub Profile Views</h1>
+      <p>Beautiful, customizable badges to showcase your profile and repository view counts. Easy to embed in your README.</p>
+      
+      <div class="badge-preview">
+        <img src="/preview?count=12453&style=flat&label=Profile+Views&icon=eye&bg=4c1" alt="Flat badge">
+        <img src="/preview?count=8921&style=rounded&label=Repo+Views&icon=github&bg=007acc" alt="Rounded badge">
+        <img src="/preview?count=5678&style=pill&label=Visitors&icon=star&bg=ff6b6b" alt="Pill badge">
+        <img src="/preview?count=3421&style=neon&label=Views&icon=fire&bg=00ff00" alt="Neon badge">
+        <img src="/preview?count=9876&style=glass&label=Hits&icon=chart&bg=0f2027,203a43,2c5364" alt="Glass badge">
+      </div>
+      
+      <div class="cta-buttons">
+        <a href="/auth/github" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Sign in with GitHub
+        </a>
+        <a href="#generator" class="btn btn-secondary">Generate Badge</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>
+            <div class="icon">🎨</div>
+            Highly Customizable
+          </h3>
+          <p>Choose from multiple styles, icons, colors, and fonts. Create gradients and add borders for unique badges.</p>
+        </div>
+        <div class="feature-card">
+          <h3>
+            <div class="icon">⚡</div>
+            Lightning Fast
+          </h3>
+          <p>Badges load in under 100ms with our edge-optimized infrastructure and Redis caching.</p>
+        </div>
+        <div class="feature-card">
+          <h3>
+            <div class="icon">🔒</div>
+            Privacy Focused
+          </h3>
+          <p>We hash IP addresses and never store personal data. No cookies, no tracking scripts.</p>
+        </div>
+        <div class="feature-card">
+          <h3>
+            <div class="icon">📊</div>
+            Detailed Analytics
+          </h3>
+          <p>View daily, weekly, and total stats. Track trends and understand your audience.</p>
+        </div>
+        <div class="feature-card">
+          <h3>
+            <div class="icon">🤖</div>
+            Bot Filtering
+          </h3>
+          <p>Intelligent bot detection ensures accurate view counts by filtering crawlers and bots.</p>
+        </div>
+        <div class="feature-card">
+          <h3>
+            <div class="icon">🌐</div>
+            GitHub Compatible
+          </h3>
+          <p>SVG badges work perfectly in GitHub READMEs with inline styles and no external dependencies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="quickstart" id="quickstart">
+    <div class="container">
+      <h2>Quick Start</h2>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px;">Add a view counter to your GitHub profile in seconds</p>
+      
+      <h3 style="margin-bottom: 16px;">1. Add to your README.md</h3>
+      <div class="code-block">
+        <button class="btn btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+        <code>![Profile Views](https://your-domain.com/badge?username=YOUR_USERNAME)</code>
+      </div>
+      
+      <h3 style="margin: 32px 0 16px;">2. Customize with parameters</h3>
+      <div class="code-block">
+        <button class="btn btn-secondary copy-btn" onclick="copyCode(this)">Copy</button>
+        <code>![Profile Views](https://your-domain.com/badge?username=YOUR_USERNAME&style=rounded&icon=eye&bg=007acc&label=Profile+Views)</code>
+      </div>
+      
+      <h3 style="margin: 32px 0 16px;">Available Parameters</h3>
+      <div class="code-block" style="padding: 0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead style="background: var(--bg-tertiary);">
+            <tr>
+              <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Parameter</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Description</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">username</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">GitHub username (required)</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">-</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">repo</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Repository name</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">-</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">style</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Badge style</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">flat, rounded, pill, neon, glass</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">icon</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Badge icon</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">eye, github, fire, star, chart</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">bg</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Background color (hex or gradient)</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">4c1, 007acc, ff6b6b,fa8072</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">textColor</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Text color (hex)</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">fff, 000, etc.</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid var(--border);">label</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Custom label text</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">-</td></tr>
+            <tr><td style="padding: 12px;">countFormat</td><td style="padding: 12px;">Number format</td><td style="padding: 12px;">normal, short, comma</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  <section class="generator" id="generator">
+    <div class="container">
+      <h2>Badge Generator</h2>
+      <div class="generator-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="username">GitHub Username *</label>
+            <input type="text" id="username" placeholder="your-username" required>
+          </div>
+          <div class="form-group">
+            <label for="repo">Repository (optional)</label>
+            <input type="text" id="repo" placeholder="repo-name">
+          </div>
+          <div class="form-group">
+            <label for="style">Style</label>
+            <select id="style">
+              <option value="flat">Flat</option>
+              <option value="rounded">Rounded</option>
+              <option value="pill">Pill</option>
+              <option value="neon">Neon</option>
+              <option value="glass">Glass</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="icon">Icon</label>
+            <select id="icon">
+              <option value="eye">👁️ Eye</option>
+              <option value="github">GitHub</option>
+              <option value="fire">🔥 Fire</option>
+              <option value="star">⭐ Star</option>
+              <option value="chart">📊 Chart</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="label">Label</label>
+            <input type="text" id="label" value="Profile Views">
+          </div>
+          <div class="form-group">
+            <label for="bg">Background (hex)</label>
+            <input type="text" id="bg" value="4c1" placeholder="4c1 or gradient: ff6b6b,fa8072">
+          </div>
+          <div class="form-group">
+            <label for="textColor">Text Color (hex)</label>
+            <input type="text" id="textColor" value="fff">
+          </div>
+          <div class="form-group">
+            <label for="countFormat">Count Format</label>
+            <select id="countFormat">
+              <option value="normal">Normal (1234)</option>
+              <option value="short">Short (1.2k)</option>
+              <option value="comma">Comma (1,234)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="preview-box">
+          <p style="margin-bottom: 16px; color: var(--text-secondary);">Preview:</p>
+          <img id="badge-preview" src="/preview?count=1234&style=flat&label=Profile+Views&icon=eye&bg=4c1" alt="Badge preview">
+        </div>
+        
+        <div class="output-box">
+          <p style="margin-bottom: 8px; color: var(--text-secondary);">Markdown:</p>
+          <code id="markdown-output">![Profile Views](<span id="badge-url">/badge?username=YOUR_USERNAME&style=flat&icon=eye&bg=4c1&label=Profile+Views</span>)</code>
+        </div>
+        
+        <div style="margin-top: 24px; display: flex; gap: 16px; justify-content: center;">
+          <button class="btn btn-primary" onclick="generateBadge()">Generate Badge</button>
+          <button class="btn btn-secondary" onclick="copyMarkdown()">Copy Markdown</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <p>Built with ❤️ for the open source community</p>
+      <p style="margin-top: 8px;">
+        <a href="https://github.com" target="_blank">GitHub</a> • 
+        <a href="/dashboard">Dashboard</a> •
+        <a href="/api/stats/demo">API</a>
+      </p>
+    </div>
+  </footer>
+  
+  <script>
+    const baseUrl = window.location.origin;
+    
+    // Form elements
+    const inputs = ['username', 'repo', 'style', 'icon', 'label', 'bg', 'textColor', 'countFormat'];
+    
+    // Add event listeners
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+      document.getElementById(id).addEventListener('change', updatePreview);
+    });
+    
+    function updatePreview() {
+      const username = document.getElementById('username').value || 'YOUR_USERNAME';
+      const repo = document.getElementById('repo').value;
+      const style = document.getElementById('style').value;
+      const icon = document.getElementById('icon').value;
+      const label = document.getElementById('label').value;
+      const bg = document.getElementById('bg').value;
+      const textColor = document.getElementById('textColor').value;
+      const countFormat = document.getElementById('countFormat').value;
+      
+      // Build preview URL
+      const params = new URLSearchParams({
+        count: '1234',
+        style: style,
+        icon: icon,
+        label: label,
+        bg: bg,
+        textColor: textColor,
+        countFormat: countFormat
+      });
+      
+      const previewUrl = `/preview?${params.toString()}`;
+      document.getElementById('badge-preview').src = previewUrl;
+      
+      // Build badge URL
+      const badgeParams = new URLSearchParams({
+        username: username,
+        style: style,
+        icon: icon,
+        label: label,
+        bg: bg,
+        textColor: textColor,
+        countFormat: countFormat
+      });
+      
+      if (repo) {
+        badgeParams.set('repo', repo);
+      }
+      
+      const badgeUrl = `${baseUrl}/badge?${badgeParams.toString()}`;
+      document.getElementById('badge-url').textContent = badgeUrl;
+    }
+    
+    function generateBadge() {
+      const username = document.getElementById('username').value;
+      if (!username) {
+        alert('Please enter your GitHub username');
+        return;
+      }
+      updatePreview();
+    }
+    
+    function copyMarkdown() {
+      const markdown = document.getElementById('markdown-output').textContent;
+      navigator.clipboard.writeText(markdown).then(() => {
+        alert('Markdown copied to clipboard!');
+      });
+    }
+    
+    function copyCode(btn) {
+      const code = btn.parentElement.querySelector('code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    }
+    
+    // Initial preview
+    updatePreview();
+  </script>
+</body>
+</html>

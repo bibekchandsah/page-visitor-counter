@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Page Views Counter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --text-primary: #f0f6fc;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --green: #3fb950;
+      --red: #f85149;
+      --yellow: #d29922;
+      --border: #30363d;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    /* Navigation */
+    nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .user-info img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 0.875rem;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+    
+    .btn-danger {
+      background: var(--red);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      opacity: 0.9;
+    }
+    
+    /* Dashboard Layout */
+    .dashboard {
+      padding: 40px 0;
+    }
+    
+    .dashboard-header {
+      margin-bottom: 40px;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    
+    .dashboard-header p {
+      color: var(--text-secondary);
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    
+    .stat-card h3 {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    
+    .stat-card .change {
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+    
+    .stat-card .change.positive {
+      color: var(--green);
+    }
+    
+    .stat-card .change.negative {
+      color: var(--red);
+    }
+    
+    /* Counters Section */
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .section-header h2 {
+      font-size: 1.25rem;
+    }
+    
+    /* Counter Table */
+    .counter-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .counter-table th,
+    .counter-table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .counter-table th {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    
+    .counter-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .counter-table .badge-preview {
+      height: 28px;
+    }
+    
+    /* Badge Creator */
+    .badge-creator {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 32px;
+    }
+    
+    @media (max-width: 768px) {
+      .badge-creator {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .form-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .preview-panel {
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+    }
+    
+    .preview-panel h3 {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    .preview-panel img {
+      margin-bottom: 16px;
+    }
+    
+    .code-output {
+      background: var(--bg-primary);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      word-break: break-all;
+      text-align: left;
+      margin-bottom: 12px;
+    }
+    
+    /* Chart */
+    .chart-container {
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 20px 0;
+    }
+    
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--accent), var(--green));
+      border-radius: 4px 4px 0 0;
+      min-height: 4px;
+      transition: height 0.3s;
+    }
+    
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      margin-top: 8px;
+    }
+    
+    /* Login Screen */
+    .login-screen {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px;
+      text-align: center;
+      max-width: 400px;
+    }
+    
+    .login-box h1 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+    
+    .login-box p {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    
+    /* Hidden state */
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .modal h3 {
+      margin-bottom: 16px;
+    }
+    
+    .modal p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      display: none !important;
+    }
+    
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .counter-table {
+        font-size: 0.875rem;
+      }
+      
+      .counter-table th,
+      .counter-table td {
+        padding: 12px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">📊 PageViews</a>
+      <div class="user-info" id="user-info">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Login Screen -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <h1>Welcome to Dashboard</h1>
+      <p>Sign in with GitHub to access your view counters, analytics, and badge customization.</p>
+      <a href="/auth/github" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        Sign in with GitHub
+      </a>
+    </div>
+  </div>
+  
+  <!-- Dashboard (hidden until logged in) -->
+  <div class="dashboard container hidden" id="dashboard">
+    <div class="dashboard-header">
+      <h1>Dashboard</h1>
+      <p>Manage your view counters and customize badges</p>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Views</h3>
+        <div class="value" id="stat-total">0</div>
+        <div class="change positive" id="stat-change">+0 today</div>
+      </div>
+      <div class="stat-card">
+        <h3>Today's Views</h3>
+        <div class="value" id="stat-today">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>This Week</h3>
+        <div class="value" id="stat-week">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Active Badges</h3>
+        <div class="value" id="stat-badges">0</div>
+      </div>
+    </div>
+    
+    <!-- Weekly Chart -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Weekly Views</h2>
+      </div>
+      <div class="chart-container" id="chart-container">
+        <!-- Chart bars -->
+      </div>
+      <div class="chart-labels">
+        <span id="chart-day-0">Mon</span>
+        <span id="chart-day-1">Tue</span>
+        <span id="chart-day-2">Wed</span>
+        <span id="chart-day-3">Thu</span>
+        <span id="chart-day-4">Fri</span>
+        <span id="chart-day-5">Sat</span>
+        <span id="chart-day-6">Sun</span>
+      </div>
+    </div>
+    
+    <!-- Badge Creator -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Badge Creator</h2>
+      </div>
+      <div class="badge-creator">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Repository (optional)</label>
+            <input type="text" id="badge-repo" placeholder="repo-name">
+          </div>
+          <div class="form-group">
+            <label>Style</label>
+            <select id="badge-style">
+              <option value="flat">Flat</option>
+              <option value="rounded">Rounded</option>
+              <option value="pill">Pill</option>
+              <option value="neon">Neon</option>
+              <option value="glass">Glass</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Icon</label>
+            <select id="badge-icon">
+              <option value="eye">Eye</option>
+              <option value="github">GitHub</option>
+              <option value="fire">Fire</option>
+              <option value="star">Star</option>
+              <option value="chart">Chart</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Label</label>
+            <input type="text" id="badge-label" value="Profile Views">
+          </div>
+          <div class="form-group">
+            <label>Background</label>
+            <input type="text" id="badge-bg" value="4c1" placeholder="hex or gradient">
+          </div>
+          <div class="form-group">
+            <label>Text Color</label>
+            <input type="text" id="badge-textColor" value="fff">
+          </div>
+          <div class="form-group">
+            <label>Count Format</label>
+            <select id="badge-countFormat">
+              <option value="normal">Normal</option>
+              <option value="short">Short (1.2k)</option>
+              <option value="comma">Comma (1,234)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Border</label>
+            <select id="badge-border">
+              <option value="false">No Border</option>
+              <option value="true">With Border</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="preview-panel">
+          <h3>Live Preview</h3>
+          <img id="badge-preview-img" src="" alt="Badge preview">
+          <div class="code-output" id="badge-markdown"></div>
+          <button class="btn btn-primary" style="width: 100%;" onclick="copyBadgeCode()">Copy Markdown</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Counters List -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Your Counters</h2>
+        <button class="btn btn-secondary" onclick="refreshCounters()">Refresh</button>
+      </div>
+      <table class="counter-table">
+        <thead>
+          <tr>
+            <th>Target</th>
+            <th>Total Views</th>
+            <th>Today</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="counters-table-body">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+      <div id="no-counters" class="hidden" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+        <p>No counters yet. Add a badge to your GitHub README to start tracking!</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Set Count Modal -->
+  <div id="set-count-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>Set View Count</h3>
+      <p>Set your counter to a specific number. Useful for resuming from a previous count or migrating from another service.</p>
+      <div class="form-group">
+        <label for="new-count">New Count</label>
+        <input type="number" id="new-count" min="0" max="999999999" placeholder="Enter count">
+      </div>
+      <input type="hidden" id="set-count-username">
+      <input type="hidden" id="set-count-repo">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeSetCountModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitSetCount()">Set Count</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const baseUrl = window.location.origin;
+    let currentUser = null;
+    let token = null;
+    
+    // Check for token in URL or localStorage
+    function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      
+      if (urlToken) {
+        token = urlToken;
+        localStorage.setItem('auth_token', token);
+        // Clean URL
+        window.history.replaceState({}, document.title, '/dashboard');
+      } else {
+        token = localStorage.getItem('auth_token');
+      }
+      
+      const error = urlParams.get('error');
+      if (error) {
+        alert('Authentication error: ' + error);
+      }
+      
+      if (token) {
+        fetchUser();
+      }
+    }
+    
+    // Fetch current user
+    async function fetchUser() {
+      try {
+        const res = await fetch('/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (res.ok) {
+          currentUser = await res.json();
+          showDashboard();
+          loadDashboardData();
+        } else {
+          localStorage.removeItem('auth_token');
+          token = null;
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err);
+      }
+    }
+    
+    // Show dashboard
+    function showDashboard() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      
+      // Update user info
+      document.getElementById('user-info').innerHTML = `
+        <img src="${currentUser.avatar_url}" alt="${currentUser.username}">
+        <span>${currentUser.username}</span>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      `;
+      
+      // Setup badge preview
+      updateBadgePreview();
+    }
+    
+    // Load dashboard data
+    async function loadDashboardData() {
+      try {
+        // Fetch stats
+        const statsRes = await fetch(`/api/stats/${currentUser.username}`);
+        const stats = await statsRes.json();
+        
+        document.getElementById('stat-total').textContent = stats.total.toLocaleString();
+        document.getElementById('stat-today').textContent = stats.today.toLocaleString();
+        document.getElementById('stat-change').textContent = `+${stats.today} today`;
+        
+        // Calculate week total
+        const weekTotal = stats.weekly.reduce((a, b) => a + b, 0);
+        document.getElementById('stat-week').textContent = weekTotal.toLocaleString();
+        
+        // Render chart
+        renderChart(stats.weekly);
+        
+        // Fetch counters
+        await refreshCounters();
+        
+        // Fetch badge configs
+        const badgesRes = await fetch('/api/badges', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const badges = await badgesRes.json();
+        document.getElementById('stat-badges').textContent = badges.length || '1';
+        
+      } catch (err) {
+        console.error('Error loading dashboard data:', err);
+      }
+    }
+    
+    // Render weekly chart
+    function renderChart(data) {
+      const container = document.getElementById('chart-container');
+      const max = Math.max(...data, 1);
+      
+      container.innerHTML = data.map((val, i) => {
+        const height = (val / max) * 160;
+        return `<div class="chart-bar" style="height: ${height}px" title="${val} views"></div>`;
+      }).join('');
+      
+      // Update day labels
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const today = new Date().getDay();
+      
+      for (let i = 0; i < 7; i++) {
+        const dayIndex = (today - 6 + i + 7) % 7;
+        document.getElementById(`chart-day-${i}`).textContent = days[dayIndex];
+      }
+    }
+    
+    // Refresh counters
+    async function refreshCounters() {
+      try {
+        const res = await fetch('/api/counters', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const counters = await res.json();
+        
+        const tbody = document.getElementById('counters-table-body');
+        const noCounters = document.getElementById('no-counters');
+        
+        if (counters.length === 0) {
+          tbody.innerHTML = '';
+          noCounters.classList.remove('hidden');
+          return;
+        }
+        
+        noCounters.classList.add('hidden');
+        
+        tbody.innerHTML = counters.map(c => `
+          <tr>
+            <td>${c.repo ? `${c.username}/${c.repo}` : c.username}</td>
+            <td>${c.total_views.toLocaleString()}</td>
+            <td>${(c.today || 0).toLocaleString()}</td>
+            <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="btn btn-secondary" onclick="copyCounterEmbed('${c.username}', '${c.repo || ''}')">Copy</button>
+              <button class="btn btn-secondary" onclick="showSetCountModal('${c.username}', '${c.repo || ''}', ${c.total_views})">Set</button>
+              <button class="btn btn-danger" onclick="resetCounter('${c.username}', '${c.repo || ''}')">Reset</button>
+            </td>
+          </tr>
+        `).join('');
+        
+      } catch (err) {
+        console.error('Error fetching counters:', err);
+      }
+    }
+    
+    // Badge preview update
+    function updateBadgePreview() {
+      if (!currentUser) return;
+      
+      const repo = document.getElementById('badge-repo').value;
+      const style = document.getElementById('badge-style').value;
+      const icon = document.getElementById('badge-icon').value;
+      const label = document.getElementById('badge-label').value;
+      const bg = document.getElementById('badge-bg').value;
+      const textColor = document.getElementById('badge-textColor').value;
+      const countFormat = document.getElementById('badge-countFormat').value;
+      const border = document.getElementById('badge-border').value;
+      
+      // Build preview URL
+      const previewParams = new URLSearchParams({
+        count: '1234',
+        style, icon, label, bg, textColor, countFormat, border
+      });
+      
+      document.getElementById('badge-preview-img').src = `/preview?${previewParams}`;
+      
+      // Build badge URL
+      const badgeParams = new URLSearchParams({
+        username: currentUser.username,
+        style, icon, label, bg, textColor, countFormat, border
+      });
+      
+      if (repo) badgeParams.set('repo', repo);
+      
+      const badgeUrl = `${baseUrl}/badge?${badgeParams}`;
+      const markdown = `![${label}](${badgeUrl})`;
+      
+      document.getElementById('badge-markdown').textContent = markdown;
+    }
+    
+    // Copy badge code
+    function copyBadgeCode() {
+      const markdown = document.getElementById('badge-markdown').textContent;
+      navigator.clipboard.writeText(markdown).then(() => {
+        alert('Markdown copied to clipboard!');
+      });
+    }
+    
+    // Copy counter embed
+    function copyCounterEmbed(username, repo) {
+      const params = new URLSearchParams({ username });
+      if (repo) params.set('repo', repo);
+      
+      const url = `${baseUrl}/badge?${params}`;
+      const markdown = `![Profile Views](${url})`;
+      
+      navigator.clipboard.writeText(markdown).then(() => {
+        alert('Markdown copied to clipboard!');
+      });
+    }
+    
+    // Reset counter
+    async function resetCounter(username, repo) {
+      if (!confirm('Are you sure you want to reset this counter? This action cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/reset', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, repo: repo || null })
+        });
+        
+        if (res.ok) {
+          alert('Counter reset successfully!');
+          loadDashboardData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        console.error('Error resetting counter:', err);
+        alert('Failed to reset counter');
+      }
+    }
+    
+    // Logout
+    function logout() {
+      localStorage.removeItem('auth_token');
+      token = null;
+      currentUser = null;
+      window.location.reload();
+    }
+    
+    // Set Count Modal functions
+    function showSetCountModal(username, repo, currentCount) {
+      document.getElementById('new-count').value = currentCount;
+      document.getElementById('set-count-username').value = username;
+      document.getElementById('set-count-repo').value = repo;
+      document.getElementById('set-count-modal').classList.remove('hidden');
+    }
+    
+    function closeSetCountModal() {
+      document.getElementById('set-count-modal').classList.add('hidden');
+    }
+    
+    async function submitSetCount() {
+      const username = document.getElementById('set-count-username').value;
+      const repo = document.getElementById('set-count-repo').value || null;
+      const count = parseInt(document.getElementById('new-count').value, 10);
+      
+      if (isNaN(count) || count < 0) {
+        alert('Please enter a valid non-negative number');
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/set-count', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, repo, count })
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          alert(`Counter set to ${data.count.toLocaleString()}`);
+          closeSetCountModal();
+          loadDashboardData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        console.error('Error setting count:', err);
+        alert('Failed to set count');
+      }
+    }
+    
+    // Close modal on overlay click
+    document.getElementById('set-count-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'set-count-modal') {
+        closeSetCountModal();
+      }
+    });
+    
+    // Add event listeners for badge creator
+    const badgeInputs = ['badge-repo', 'badge-style', 'badge-icon', 'badge-label', 'badge-bg', 'badge-textColor', 'badge-countFormat', 'badge-border'];
+    badgeInputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', updateBadgePreview);
+      document.getElementById(id).addEventListener('change', updateBadgePreview);
+    });
+    
+    // Initialize
+    init();
+  </script>
+</body>
+</html>
