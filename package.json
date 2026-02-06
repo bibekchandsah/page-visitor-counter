@@ -14,11 +14,18 @@
     "@fastify/jwt": "^8.0.0",
     "@fastify/rate-limit": "^9.1.0",
     "@fastify/static": "^7.0.4",
+    "dotenv": "^17.2.4",
     "fastify": "^4.28.1",
     "ioredis": "^5.4.1",
     "mongodb": "^6.3.0"
   },
-  "keywords": ["github", "badge", "views", "counter", "svg"],
+  "keywords": [
+    "github",
+    "badge",
+    "views",
+    "counter",
+    "svg"
+  ],
   "author": "",
   "license": "MIT"
 }

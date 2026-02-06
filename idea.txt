@@ -62,3 +62,4 @@ git push -u origin main
 
 ![Profile Views](https://page-visit-counter.onrender.com/badge?username=bebedudu&repo=bibekchandsah)
 
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
