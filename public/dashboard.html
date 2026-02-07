@@ -70,6 +70,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
     }
 
     .logo {
@@ -135,7 +137,7 @@
 
     /* Dashboard Layout */
     .dashboard {
-      padding: 40px 0;
+      padding: 40px 20px;
     }
 
     .dashboard-header {
@@ -315,7 +317,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
-      width: 100%;
+      width: 115%;
     }
 
     .color-input-wrapper input[type="text"] {
@@ -462,7 +464,7 @@
     }
 
     .html-preview-frame {
-      background: white;
+      /* background: white; */
       border-radius: 8px;
       padding: 20px;
       min-height: 60px;
@@ -476,6 +478,9 @@
       border-radius: 8px;
       padding: 24px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
     }
 
     .preview-panel h3 {
@@ -598,18 +603,105 @@
 
 
     /* Responsive */
+    @media (max-width: 945px) {
+      .counter-table {
+        font-size: 0.8rem;
+      }
+
+      .counter-table th,
+      .counter-table td {
+        padding: 10px 6px;
+      }
+
+      .actions-cell {
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .actions-cell .btn {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+      }
+
+      .actions-cell .btn-icon {
+        padding: 4px;
+      }
+    }
+
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
       .counter-table {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
       }
 
       .counter-table th,
       .counter-table td {
-        padding: 12px 8px;
+        padding: 8px 4px;
+      }
+
+      .actions-cell .btn {
+        font-size: 0.7rem;
+        padding: 4px 6px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .counter-table thead {
+        display: none;
+      }
+
+      .counter-table,
+      .counter-table tbody,
+      .counter-table tr,
+      .counter-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .counter-table tr {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 12px;
+      }
+
+      .counter-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .counter-table td:last-child {
+        border-bottom: none;
+      }
+
+      .counter-table td::before {
+        content: attr(data-label);
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .counter-table .actions-cell {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .counter-table .actions-cell::before {
+        display: none;
+      }
+
+      .counter-table .actions-cell .btn {
+        font-size: 0.75rem;
+        padding: 6px 10px;
       }
     }
   </style>
@@ -855,9 +947,9 @@
           <img id="badge-preview-img" src="" alt="Badge preview">
           <div id="html-preview-container" class="html-preview-frame" style="display: none;"></div>
           <div class="code-output" id="badge-markdown"></div>
-          <button class="btn btn-primary" style="width: 100%;" onclick="copyBadgeCode()">Copy Markdown</button>
+          <button id="copy-markdown-btn" class="btn btn-primary" style="width: 100%;" onclick="copyBadgeCode(this)">Copy Markdown</button>
           <button id="copy-html-btn" class="btn btn-secondary" style="width: 100%; margin-top: 8px; display: none;"
-            onclick="copyHtmlCode()">Copy HTML Embed Code</button>
+            onclick="copyHtmlCode(this)">Copy HTML Embed Code</button>
         </div>
       </div>
     </div>
@@ -1046,11 +1138,11 @@
         const badgeUrl = `${baseUrl}/badge?username=${c.username}${c.repo ? `&repo=${c.repo}` : ''}`;
         return `
         <tr>
-          <td>${c.repo ? `${c.username}/${c.repo}` : c.username}</td>
-          <td>${c.total_views.toLocaleString()}</td>
-          <td>${(c.today || 0).toLocaleString()}</td>
-          <td>${new Date(c.created_at).toLocaleDateString()}</td>
-          <td class="actions-cell">
+          <td data-label="Target">${c.repo ? `${c.username}/${c.repo}` : c.username}</td>
+          <td data-label="Total Views">${c.total_views.toLocaleString()}</td>
+          <td data-label="Today">${(c.today || 0).toLocaleString()}</td>
+          <td data-label="Created">${new Date(c.created_at).toLocaleDateString()}</td>
+          <td class="actions-cell" data-label="Actions">
             <a href="${badgeUrl}" target="_blank" title="Open badge" class="btn-icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -1058,7 +1150,7 @@
                 <line x1="10" y1="14" x2="21" y2="3"/>
               </svg>
             </a>
-            <button class="btn btn-secondary" onclick="copyCounterEmbed('${c.username}', '${c.repo || ''}')">Copy</button>
+            <button class="btn btn-secondary" onclick="copyCounterEmbed(this, '${c.username}', '${c.repo || ''}')">Copy</button>
             <button class="btn btn-secondary" onclick="showSetCountModal('${c.username}', '${c.repo || ''}', ${c.total_views})">Set</button>
             <button class="btn btn-danger" onclick="resetCounter('${c.username}', '${c.repo || ''}')">Reset</button>
             <button class="btn btn-danger" onclick="deleteCounter('${c.username}', '${c.repo || ''}')">Delete</button>
@@ -1371,7 +1463,7 @@
 
       // Show/hide HTML template editor
       document.getElementById('html-template-editor').style.display = style === 'html' ? 'block' : 'none';
-      
+
       // Auto-load default HTML template if empty or first time
       if (style === 'html') {
         const htmlTextarea = document.getElementById('html-template');
@@ -1404,7 +1496,7 @@
         const iconEmoji = iconEmojis[icon] || '';
         const iconHtml = iconEmoji ? `<span class="badge-icon-emoji">${iconEmoji}</span>` : '';
         const formattedCount = formatCountValue('1234', countFormat);
-        
+
         // Ensure colors have # prefix
         const bgColor = bg.startsWith('#') ? bg : '#' + bg;
         const txtColor = textColor.startsWith('#') ? textColor : '#' + textColor;
@@ -1548,7 +1640,7 @@
       }
     }
 
-    function copyHtmlCode() {
+    function copyHtmlCode(btn) {
       const style = document.getElementById('badge-style').value;
       if (style !== 'html') return;
 
@@ -1614,191 +1706,212 @@ fetch('${baseUrl}/badge?username=${currentUser?.username}${repoParam}&format=jso
 <` + `/script>`;
 
       navigator.clipboard.writeText(embedCode).then(() => {
-        alert('HTML embed code copied to clipboard!');
+        showButtonFeedback(btn, 'Copy HTML Embed Code');
       });
     }
 
-  // Debounced version of updateBadgePreview (150ms delay)
-  const updateBadgePreview = debounce(_updateBadgePreview, 150);
+    // Helper function to show "Copied" feedback on buttons
+    function showButtonFeedback(button, originalText) {
+      if (!button) return;
+      button.textContent = 'Copied!';
+      button.disabled = true;
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.disabled = false;
+      }, 3000);
+    }
 
-  // Copy badge code
-  function copyBadgeCode() {
-  const markdown = document.getElementById('badge-markdown').textContent;
-  navigator.clipboard.writeText(markdown).then(() => {
-  alert('Markdown copied to clipboard!');
-  });
-  }
+    // Debounced version of updateBadgePreview (150ms delay)
+    const updateBadgePreview = debounce(_updateBadgePreview, 150);
 
-  // Copy text to clipboard
-  function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-  alert('URL copied to clipboard!');
-  }).catch(err => {
-  console.error('Failed to copy:', err);
-  // Fallback
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textarea);
-  alert('URL copied to clipboard!');
-  });
-  }
+    // Copy badge code
+    function copyBadgeCode(btn) {
+      const markdown = document.getElementById('badge-markdown').textContent;
+      navigator.clipboard.writeText(markdown).then(() => {
+        showButtonFeedback(btn, 'Copy Markdown');
+      });
+    }
 
-  // Copy counter embed
-  function copyCounterEmbed(username, repo) {
-  const params = new URLSearchParams({ username });
-  if (repo) params.set('repo', repo);
+    // Copy text to clipboard
+    function copyToClipboard(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showButtonFeedback(btn, 'Copy');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showButtonFeedback(btn, 'Copy');
+      });
+    }
 
-  const url = `${baseUrl}/badge?${params}`;
-  const markdown = `![Profile Views](${url})`;
+    // Copy counter embed
+    function copyCounterEmbed(btn, username, repo) {
+      const params = new URLSearchParams({ username });
+      if (repo) params.set('repo', repo);
 
-  navigator.clipboard.writeText(markdown).then(() => {
-  alert('Markdown copied to clipboard!');
-  });
-  }
+      const url = `${baseUrl}/badge?${params}`;
+      const markdown = `![Profile Views](${url})`;
 
-  // Reset counter
-  async function resetCounter(username, repo) {
-  if (!confirm('Are you sure you want to reset this counter? This action cannot be undone.')) {
-  return;
-  }
+      navigator.clipboard.writeText(markdown).then(() => {
+        showButtonFeedback(btn, 'Copy');
+      });
+    }
 
-  try {
-  const res = await fetch('/api/reset', {
-  method: 'POST',
-  headers: {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ username, repo: repo || null })
-  });
+    // Reset counter
+    async function resetCounter(username, repo) {
+      if (!confirm('Are you sure you want to reset this counter? This action cannot be undone.')) {
+        return;
+      }
 
-  if (res.ok) {
-  alert('Counter reset successfully!');
-  loadDashboardData();
-  } else {
-  const data = await res.json();
-  alert('Error: ' + data.error);
-  }
-  } catch (err) {
-  console.error('Error resetting counter:', err);
-  alert('Failed to reset counter');
-  }
-  }
+      try {
+        const res = await fetch('/api/reset', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, repo: repo || null })
+        });
 
-  // Delete counter
-  async function deleteCounter(username, repo) {
-  if (!confirm('Are you sure you want to DELETE this counter permanently? All data will be lost. This action cannot be undone.')) {
-  return;
-  }
-
-  try {
-  const res = await fetch('/api/counter', {
-  method: 'DELETE',
-  headers: {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ username, repo: repo || null })
-  });
-
-  if (res.ok) {
-  alert('Counter deleted successfully!');
-  loadDashboardData();
-  } else {
-  const data = await res.json();
-  alert('Error: ' + data.error);
-  }
-  } catch (err) {
-  console.error('Error deleting counter:', err);
-  alert('Failed to delete counter');
-  }
-  }
-
-  // Logout
-  function logout() {
-  localStorage.removeItem('auth_token');
-  token = null;
-  currentUser = null;
-  window.location.reload();
-  }
-
-  // Set Count Modal functions
-  function showSetCountModal(username, repo, currentCount) {
-  document.getElementById('new-count').value = currentCount;
-  document.getElementById('set-count-username').value = username;
-  document.getElementById('set-count-repo').value = repo;
-  document.getElementById('set-count-modal').classList.remove('hidden');
-  }
-
-  function closeSetCountModal() {
-  document.getElementById('set-count-modal').classList.add('hidden');
-  }
-
-  async function submitSetCount() {
-  const username = document.getElementById('set-count-username').value;
-  const repo = document.getElementById('set-count-repo').value || null;
-  const count = parseInt(document.getElementById('new-count').value, 10);
-
-  if (isNaN(count) || count < 0) { alert('Please enter a valid non-negative number'); return; } try { const res=await
-    fetch('/api/set-count', { method: 'POST' , headers: { 'Authorization' : `Bearer ${token}`, 'Content-Type'
-    : 'application/json' }, body: JSON.stringify({ username, repo, count }) }); if (res.ok) { const data=await
-    res.json(); alert(`Counter set to ${data.count.toLocaleString()}`); closeSetCountModal(); loadDashboardData(); }
-    else { const data=await res.json(); alert('Error: ' + data.error);
+        if (res.ok) {
+          alert('Counter reset successfully!');
+          loadDashboardData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + data.error);
         }
       } catch (err) {
-        console.error(' Error setting count:', err); alert('Failed to set count'); } } // Close modal on overlay click
-    document.getElementById('set-count-modal').addEventListener('click', (e)=> {
-    if (e.target.id === 'set-count-modal') {
-    closeSetCountModal();
+        console.error('Error resetting counter:', err);
+        alert('Failed to reset counter');
+      }
     }
+
+    // Delete counter
+    async function deleteCounter(username, repo) {
+      if (!confirm('Are you sure you want to DELETE this counter permanently? All data will be lost. This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/counter', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, repo: repo || null })
+        });
+
+        if (res.ok) {
+          alert('Counter deleted successfully!');
+          loadDashboardData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        console.error('Error deleting counter:', err);
+        alert('Failed to delete counter');
+      }
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('auth_token');
+      token = null;
+      currentUser = null;
+      window.location.reload();
+    }
+
+    // Set Count Modal functions
+    function showSetCountModal(username, repo, currentCount) {
+      document.getElementById('new-count').value = currentCount;
+      document.getElementById('set-count-username').value = username;
+      document.getElementById('set-count-repo').value = repo;
+      document.getElementById('set-count-modal').classList.remove('hidden');
+    }
+
+    function closeSetCountModal() {
+      document.getElementById('set-count-modal').classList.add('hidden');
+    }
+
+    async function submitSetCount() {
+      const username = document.getElementById('set-count-username').value;
+      const repo = document.getElementById('set-count-repo').value || null;
+      const count = parseInt(document.getElementById('new-count').value, 10);
+
+      if (isNaN(count) || count < 0) { alert('Please enter a valid non-negative number'); return; } try {
+        const res = await
+          fetch('/api/set-count', {
+            method: 'POST', headers: {
+              'Authorization': `Bearer ${token}`, 'Content-Type'
+                : 'application/json'
+            }, body: JSON.stringify({ username, repo, count })
+          }); if (res.ok) {
+            const data = await
+              res.json(); alert(`Counter set to ${data.count.toLocaleString()}`); closeSetCountModal(); loadDashboardData();
+          }
+        else {
+          const data = await res.json(); alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        console.error(' Error setting count:', err); alert('Failed to set count');
+      }
+    } // Close modal on overlay click
+    document.getElementById('set-count-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'set-count-modal') {
+        closeSetCountModal();
+      }
     });
 
     // Color picker sync functions
     function hexToFullHex(hex) {
-    hex = hex.replace('#', '');
-    if (hex.length === 3) {
-    return '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    return '#' + hex.padEnd(6, '0');
+      hex = hex.replace('#', '');
+      if (hex.length === 3) {
+        return '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+      }
+      return '#' + hex.padEnd(6, '0');
     }
 
     function syncColorPickers() {
-    const bgText = document.getElementById('badge-bg');
-    const bgPicker = document.getElementById('badge-bg-picker');
-    const textColorText = document.getElementById('badge-textColor');
-    const textColorPicker = document.getElementById('badge-textColor-picker');
-    const borderColorText = document.getElementById('badge-borderColor');
-    const borderColorPicker = document.getElementById('badge-borderColor-picker');
+      const bgText = document.getElementById('badge-bg');
+      const bgPicker = document.getElementById('badge-bg-picker');
+      const textColorText = document.getElementById('badge-textColor');
+      const textColorPicker = document.getElementById('badge-textColor-picker');
+      const borderColorText = document.getElementById('badge-borderColor');
+      const borderColorPicker = document.getElementById('badge-borderColor-picker');
 
-    // Sync text to picker (only if it's a valid single color, not gradient)
-    if (bgText.value && !bgText.value.includes('-')) {
-    try { bgPicker.value = hexToFullHex(bgText.value); } catch (e) { }
-    }
-    if (textColorText.value) {
-    try { textColorPicker.value = hexToFullHex(textColorText.value); } catch (e) { }
-    }
-    if (borderColorText.value) {
-    try { borderColorPicker.value = hexToFullHex(borderColorText.value); } catch (e) { }
-    }
+      // Sync text to picker (only if it's a valid single color, not gradient)
+      if (bgText.value && !bgText.value.includes('-')) {
+        try { bgPicker.value = hexToFullHex(bgText.value); } catch (e) { }
+      }
+      if (textColorText.value) {
+        try { textColorPicker.value = hexToFullHex(textColorText.value); } catch (e) { }
+      }
+      if (borderColorText.value) {
+        try { borderColorPicker.value = hexToFullHex(borderColorText.value); } catch (e) { }
+      }
     }
 
     // Picker to text sync
     document.getElementById('badge-bg-picker').addEventListener('input', (e) => {
-    document.getElementById('badge-bg').value = e.target.value.replace('#', '');
-    updateBadgePreview();
+      document.getElementById('badge-bg').value = e.target.value.replace('#', '');
+      updateBadgePreview();
     });
 
     document.getElementById('badge-textColor-picker').addEventListener('input', (e) => {
-    document.getElementById('badge-textColor').value = e.target.value.replace('#', '');
-    updateBadgePreview();
+      document.getElementById('badge-textColor').value = e.target.value.replace('#', '');
+      updateBadgePreview();
     });
 
     document.getElementById('badge-borderColor-picker').addEventListener('input', (e) => {
-    document.getElementById('badge-borderColor').value = e.target.value.replace('#', '');
-    updateBadgePreview();
+      document.getElementById('badge-borderColor').value = e.target.value.replace('#', '');
+      updateBadgePreview();
     });
 
     // Text to picker sync
@@ -1808,10 +1921,10 @@ fetch('${baseUrl}/badge?username=${currentUser?.username}${repoParam}&format=jso
 
     // Add event listeners for badge creator
     const badgeInputs = ['badge-repo', 'badge-style', 'badge-icon', 'badge-label', 'badge-bg', 'badge-textColor',
-    'badge-countFormat', 'badge-border', 'badge-borderColor', 'badge-format'];
+      'badge-countFormat', 'badge-border', 'badge-borderColor', 'badge-format'];
     badgeInputs.forEach(id => {
-    document.getElementById(id).addEventListener('input', updateBadgePreview);
-    document.getElementById(id).addEventListener('change', updateBadgePreview);
+      document.getElementById(id).addEventListener('input', updateBadgePreview);
+      document.getElementById(id).addEventListener('change', updateBadgePreview);
     });
 
     // Custom template textarea listener
@@ -1823,7 +1936,7 @@ fetch('${baseUrl}/badge?username=${currentUser?.username}${repoParam}&format=jso
 
     // Initialize
     init();
-    </script>
+  </script>
 </body>
 
 </html>
