@@ -1,6 +1,6 @@
 # Page Views Counter
 
-A production-ready web service that tracks GitHub profile/repository views and generates highly customizable badges (SVG/PNG) embeddable in GitHub READMEs and external websites.
+A production-ready web service that tracks GitHub profile/repository/web page views and generates highly customizable badges (SVG/PNG/HTML-CSS) embeddable in GitHub READMEs and external websites.
 
 ![Profile Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=rounded&icon=eye&bg=007acc)
 
@@ -13,6 +13,75 @@ A production-ready web service that tracks GitHub profile/repository views and g
 - **Analytics Dashboard** - Daily, weekly, and total view statistics
 - **GitHub OAuth** - Secure authentication and user management
 - **Multiple Formats** - SVG (default), PNG, and JSON output
+
+## Use Cases
+
+### GitHub Profile README
+Add a visitor counter to your GitHub profile to track how many people view your profile:
+
+```markdown
+![Profile Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=rounded&icon=eye&bg=007acc)
+```
+![Profile Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=rounded&icon=eye&bg=007acc)
+
+### Repository README
+Track views on specific repositories to measure project reach and popularity:
+
+```markdown
+![Repo Views](https://page-visit-counter.onrender.com/badge?username=your-username&repo=my-project&style=pill&icon=github)
+```
+![Repo Views](https://page-visit-counter.onrender.com/badge?username=your-username&repo=my-project&style=pill&icon=github)
+
+### Portfolio Websites
+Embed the badge in your personal portfolio or blog to show visitor counts:
+
+```html
+<img src="https://page-visit-counter.onrender.com/badge?username=your-username&style=neon&icon=chart&bg=ff6b6b" alt="Visitors">
+```
+<img src="https://page-visit-counter.onrender.com/badge?username=your-username&style=neon&icon=chart&bg=ff6b6b" alt="Visitors">
+
+### Documentation Sites
+Track engagement on documentation pages for open source projects:
+
+```markdown
+![Docs Views](https://page-visit-counter.onrender.com/badge?username=your-username&repo=docs&style=glass&icon=eye&label=Visitors)
+```
+![Docs Views](https://page-visit-counter.onrender.com/badge?username=your-username&repo=docs&style=glass&icon=eye&label=Visitors)
+
+### Project Showcases
+Display view counts on project landing pages to indicate popularity:
+
+```html
+<a href="https://your-domain.com/dashboard">
+  <img src="https://page-visit-counter.onrender.com/badge?username=your-username&repo=project&style=rounded&bg=4c1,007acc" alt="Project Views">
+</a>
+```
+<a href="https://your-domain.com/dashboard">
+  <img src="https://page-visit-counter.onrender.com/badge?username=your-username&repo=project&style=rounded&bg=4c1,007acc" alt="Project Views">
+</a>
+
+### Social Proof for Open Source
+Show community interest in your open source contributions:
+
+```markdown
+[![Total Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=flat&icon=star&countFormat=comma)](https://github.com/your-username)
+```
+[![Total Views](https://page-visit-counter.onrender.com/badge?username=your-username&style=flat&icon=star&countFormat=comma)](https://github.com/your-username)
+
+### Blog Articles
+Track readership on individual blog posts or tutorials:
+
+```html
+<img src="https://page-visit-counter.onrender.com/badge?username=your-username&repo=blog-post-slug&label=Readers&icon=eye&style=pill" alt="Readers">
+```
+<img src="https://page-visit-counter.onrender.com/badge?username=your-username&repo=blog-post-slug&label=Readers&icon=eye&style=pill" alt="Readers">
+
+### Custom HTML/CSS Badges
+Create fully customized badge designs for unique branding:
+
+```
+GET /badge?username=your-username&style=html&template=<your-custom-html-template>
+```
 
 ## Quick Start
 
@@ -68,7 +137,7 @@ GET /badge?username=YOUR_USERNAME
 | `username` | GitHub username (required) | - |
 | `repo` | Repository name | - |
 | `style` | flat, rounded, pill, neon, glass | flat |
-| `icon` | eye, github, fire, star, chart | eye |
+| `icon` | eye, github, fire, star, chart, heart, rocket, user, code, globe | eye |
 | `label` | Custom label text | Profile Views |
 | `bg` | Background color (hex or gradient) | 4c1 |
 | `textColor` | Text color (hex) | fff |
@@ -80,19 +149,30 @@ GET /badge?username=YOUR_USERNAME
 
 #### Examples
 
-```markdown
 <!-- Basic -->
-![Views](https://your-domain.com/badge?username=octocat)
+```markdown
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat)
+```
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat)
 
 <!-- Styled -->
-![Views](https://your-domain.com/badge?username=octocat&style=rounded&icon=github&bg=007acc)
+```markdown
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&style=rounded&icon=github&bg=007acc)
+```
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&style=rounded&icon=github&bg=007acc)
 
 <!-- Gradient -->
-![Views](https://your-domain.com/badge?username=octocat&style=glass&bg=0f2027,203a43,2c5364)
+```markdown
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&style=glass&bg=0f2027,203a43,2c5364)
+```
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&style=glass&bg=0f2027,203a43,2c5364)
 
 <!-- Repository -->
-![Views](https://your-domain.com/badge?username=octocat&repo=hello-world)
+```markdown
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&repo=hello-world)
 ```
+![Views](https://page-visit-counter.onrender.com/badge?username=octocat&repo=hello-world)
+
 
 ### Stats API
 
@@ -149,7 +229,7 @@ The codebase can be adapted for Cloudflare Workers with minimal modifications.
 ## Tech Stack
 
 - **Backend**: Node.js 18+, Fastify
-- **Database**: SQLite (better-sqlite3)
+- **Database**: MongoDB Atlas
 - **Cache**: Redis (ioredis) with in-memory fallback
 - **Auth**: GitHub OAuth, JWT
 - **Rendering**: SVG templates, Sharp for PNG
